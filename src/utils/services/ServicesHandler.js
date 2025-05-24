@@ -1,37 +1,40 @@
 import axios from 'axios';
 
-
 const URLServices = import.meta.env.VITE_APP_URL_SERVICES;
 
-const userName = import.meta.env.VITE_APP_USERNAME_SERVICES;
-const pass = import.meta.env.VITE_APP_PASS_SERVICES;
-
-const toEncript = `${userName}:${pass}`;
-
-const basicAuth = `Basic ${btoa(toEncript)}`;
-
-const config = { headers: { 'Authorization': basicAuth, 'Content-Type': 'application/json' } };
+const getAuthConfig = () => {
+    const token = localStorage.getItem("jwt");
+    return {
+        headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+        },
+    };
+};
 
 const playListServices = {
     getAllPlayLists() {
-        return axios.get(`${URLServices}/lists`, config)
+        return axios.get(`${URLServices}/lists`, getAuthConfig());
     },
 
     deletePlayList(name) {
-        return axios.delete(`${URLServices}/lists/${name}`, config)
+        return axios.delete(`${URLServices}/lists/${name}`, getAuthConfig());
     },
 
     getPlayListByName(name) {
-        return axios.get(`${URLServices}/lists/${name}`, config)
+        return axios.get(`${URLServices}/lists/${name}`, getAuthConfig());
     },
 
     savePlayList(playList) {
-        return axios.post(`${URLServices}/lists`, playList, config);
-    }
+        return axios.post(`${URLServices}/lists`, playList, getAuthConfig());
+    },
+};
 
-
+const genres = {
+    getAllGenres() {
+        return axios.get(`${URLServices}/genres`, getAuthConfig());
+    },
 }
 
-
-export { playListServices };
+export { playListServices, genres };
 
